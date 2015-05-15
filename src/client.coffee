@@ -38,7 +38,8 @@ class ColorManager
     constructor: (@_index=1) ->
     next: ->
         @_index = 1 if @_index is @_max
-        @_index++;
+        
+        @_index++
 
 colors = new ColorManager
 
@@ -52,6 +53,7 @@ class _LogObject extends backbone.Model
     idAttribute: 'name'
     _pclass: -> new _LogObjects
     sync: (args...) ->
+
     constructor: (args...) ->
         super args...
         @screens = new LogScreens
@@ -164,7 +166,7 @@ class WebClient
             logNodes: @logNodes
             logStreams: @logStreams
             logScreens: @logScreens
-            webClient: @
+            webClient: this
         
         @app.render()
         @_initScreens()
@@ -279,6 +281,7 @@ TODO(msmathers): Build templates, fill out render() methods
 class ClientApplication extends backbone.View
     el: '#web_client'
     template: _.template templates.clientApplication
+
     initialize: (opts) ->
         {@logNodes, @logStreams, @logScreens, @webClient} = opts
 
@@ -290,7 +293,7 @@ class ClientApplication extends backbone.View
         @screens = new LogScreensPanel
             logScreens: @logScreens
             webClient: @webClient
-        
+
         $(window).resize @_resize if window?
 
         @listenTo @logScreens, 'add remove', @_resize
@@ -304,19 +307,24 @@ class ClientApplication extends backbone.View
         @$el.html @template()
         @$el.append @controls.render().el
         @$el.append @screens.render().el
+
         @_resize()
-        @
+        
+        this
 
 class LogControlPanel extends backbone.View
     id: 'log_controls'
     template: _.template templates.logControlPanel
+    
     initialize: (opts) ->
         {@logNodes, @logStreams, @logScreens} = opts
+        
         @streams = new ObjectControls
             objects: @logStreams
             logScreens: @logScreens
             getPair: (object, item) -> [object, item]
             id: 'log_control_streams'
+
         @nodes = new ObjectControls
             objects: @logNodes
             logScreens: @logScreens
@@ -332,14 +340,17 @@ class LogControlPanel extends backbone.View
         target = $ e.currentTarget
         target.addClass('active').siblings().removeClass 'active'
         tid = target.attr 'href'
+        
         @$el.find(tid).show().siblings('.object_controls').hide()
+        
         false
 
     render: ->
         @$el.html @template()
         @$el.append @streams.render().el
         @$el.append @nodes.render().el
-        @
+        
+        this
 
 class ObjectControls extends backbone.View
     className: 'object_controls'
@@ -540,12 +551,14 @@ class LogScreensPanel extends backbone.View
 
 class LogScreenView extends backbone.View
     className: 'log_screen'
+
     template: _.template templates.logScreenView
     logTemplate: _.template templates.logMessage
-    initialize: (opts) ->
-        {@logScreen, @logScreens} = opts
+
+    initialize: ({@logScreen, @logScreens}) ->
         @listenTo @logScreen, 'destroy', => @remove()
         @listenTo @logScreen, 'new_log', @_addNewLogMessage
+
         @forceScroll = true
         @filter = null
 
@@ -566,12 +579,15 @@ class LogScreenView extends backbone.View
     __filter: (e) =>
         input = $ e.currentTarget
         _filter_buffer = input.val()
+
         wait = =>
             @_filter _filter_buffer if _filter_buffer is input.val()
+
         setTimeout wait, 350
 
     _filter: (filter) =>
         @filter = if filter then new RegExp "(#{filter})", 'ig' else null
+        
         @_renderMessages()
 
     _addNewLogMessage: (lmessage) =>
@@ -585,12 +601,15 @@ class LogScreenView extends backbone.View
     _renderNewLog: (lmessage) =>
         _msg = lmessage.get 'message'
         msg = lmessage.render_message()
+
         if @filter
             msg = if _msg.match @filter then msg.replace @filter, '<span class="highlight">$1</span>' else null
+        
         if msg
             @msgs.append @logTemplate
                 lmessage: lmessage
                 msg: msg
+        
             @$el.find('.messages')[0].scrollTop = @$el.find('.messages')[0].scrollHeight if @forceScroll
 
     _renderMessages: =>
@@ -600,24 +619,30 @@ class LogScreenView extends backbone.View
     render: ->
         @$el.html @template
             logScreens: @logScreens
+        
         @$el.find('.messages').scroll @_recordScroll
         @$el.find('.controls .filter input').keyup @__filter
         @msgs = @$el.find '.msg'
+        
         @_renderMessages()
-        @
+        
+        this
 
 class LogStatsView extends backbone.View
     template: _.template templates.logStatsView
     className: 'stats'
+
     initialize: (opts) ->
         {@stats} = opts
         @rendered = false
+
         setInterval (=> @render() if @rendered), 1000
 
     render: ->
         @$el.html @template
             stats: @stats
         @rendered = true
-        @
+        
+        this
 
 exports.WebClient = WebClient

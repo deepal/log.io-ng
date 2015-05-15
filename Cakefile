@@ -21,9 +21,11 @@ task 'build', "Builds Log.io package", ->
 
 task 'compile', "Compiles CoffeeScript src/*.coffee to lib/*.js", ->
     console.log "Compiling src/*.coffee to lib/*.js"
+
     exec "#{COFFEE} --compile --output #{__dirname}/lib/ #{__dirname}/src/", (err, stdout, stderr) ->
         throw err if err
-        console.log stdout + stderr if stdout + stderr
+        
+        console.log stdout, stderr if stdout or stderr
 
 task 'browserify', "Compiles client.coffee to browser-friendly JS", ->
     console.log "Browserifying src/client.coffee to lib/log.io.js"
