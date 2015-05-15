@@ -1,0 +1,149 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/iojs', '/usr/local/bin/npm', 'i' ]
+2 info using npm@2.9.0
+3 info using node@v2.0.1
+4 verbose readDependencies loading dependencies from /Users/apx/Desktop/log.io-ng/package.json
+5 warn package.json log.io-ng@0.4.0 No repository field.
+6 verbose install where, deps [ '/Users/apx/Desktop/log.io-ng',
+6 verbose install   [ 'backbone',
+6 verbose install     'coffee-script',
+6 verbose install     'express',
+6 verbose install     'jquery',
+6 verbose install     'jquery-browserify',
+6 verbose install     'socket.io',
+6 verbose install     'socket.io-client',
+6 verbose install     'underscore',
+6 verbose install     'winston',
+6 verbose install     'browserify',
+6 verbose install     'cake',
+6 verbose install     'chai',
+6 verbose install     'coffeeify',
+6 verbose install     'less',
+6 verbose install     'less-plugin-clean-css',
+6 verbose install     'mocha',
+6 verbose install     'sinon',
+6 verbose install     'sinon-chai' ] ]
+7 verbose install where, peers [ '/Users/apx/Desktop/log.io-ng', [] ]
+8 verbose installManyTop reading for lifecycle /Users/apx/Desktop/log.io-ng/package.json
+9 info preinstall log.io-ng@0.4.0
+10 verbose installManyTop reading scoped package data from /Users/apx/Desktop/log.io-ng/node_modules/backbone/package.json
+11 verbose installManyTop reading scoped package data from /Users/apx/Desktop/log.io-ng/node_modules/browserify/package.json
+12 verbose installManyTop reading scoped package data from /Users/apx/Desktop/log.io-ng/node_modules/cake/package.json
+13 verbose installManyTop reading scoped package data from /Users/apx/Desktop/log.io-ng/node_modules/chai/package.json
+14 verbose installManyTop reading scoped package data from /Users/apx/Desktop/log.io-ng/node_modules/coffee-script/package.json
+15 verbose installManyTop reading scoped package data from /Users/apx/Desktop/log.io-ng/node_modules/coffeeify/package.json
+16 verbose installManyTop reading scoped package data from /Users/apx/Desktop/log.io-ng/node_modules/express/package.json
+17 verbose installManyTop reading scoped package data from /Users/apx/Desktop/log.io-ng/node_modules/jquery/package.json
+18 verbose installManyTop reading scoped package data from /Users/apx/Desktop/log.io-ng/node_modules/jquery-browserify/package.json
+19 verbose installManyTop reading scoped package data from /Users/apx/Desktop/log.io-ng/node_modules/less/package.json
+20 verbose installManyTop reading scoped package data from /Users/apx/Desktop/log.io-ng/node_modules/less-plugin-clean-css/package.json
+21 verbose installManyTop reading scoped package data from /Users/apx/Desktop/log.io-ng/node_modules/mocha/package.json
+22 verbose installManyTop reading scoped package data from /Users/apx/Desktop/log.io-ng/node_modules/sinon/package.json
+23 verbose installManyTop reading scoped package data from /Users/apx/Desktop/log.io-ng/node_modules/sinon-chai/package.json
+24 verbose installManyTop reading scoped package data from /Users/apx/Desktop/log.io-ng/node_modules/socket.io/package.json
+25 verbose installManyTop reading scoped package data from /Users/apx/Desktop/log.io-ng/node_modules/socket.io-client/package.json
+26 verbose installManyTop reading scoped package data from /Users/apx/Desktop/log.io-ng/node_modules/underscore/package.json
+27 verbose installManyTop reading scoped package data from /Users/apx/Desktop/log.io-ng/node_modules/winston/package.json
+28 verbose readDependencies loading dependencies from /Users/apx/Desktop/log.io-ng/package.json
+29 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/backbone/package.json
+30 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/browserify/package.json
+31 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/cake/package.json
+32 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/chai/package.json
+33 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/coffee-script/package.json
+34 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/coffeeify/package.json
+35 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/express/package.json
+36 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/jquery/package.json
+37 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/jquery-browserify/package.json
+38 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/less/package.json
+39 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/less-plugin-clean-css/package.json
+40 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/mocha/package.json
+41 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/sinon/package.json
+42 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/sinon-chai/package.json
+43 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/socket.io/package.json
+44 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/socket.io-client/package.json
+45 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/underscore/package.json
+46 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/winston/package.json
+47 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/.bin/browserify/package.json
+48 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/.bin/cake/package.json
+49 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/.bin/coffee/package.json
+50 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/.bin/express/package.json
+51 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/.bin/lessc/package.json
+52 verbose targetResolver reading package data from /Users/apx/Desktop/log.io-ng/node_modules/.bin/mocha/package.json
+53 verbose already installed skipping browserify@^10.2.0 /Users/apx/Desktop/log.io-ng
+54 verbose already installed skipping cake@^0.1.1 /Users/apx/Desktop/log.io-ng
+55 verbose already installed skipping chai@^2.3.0 /Users/apx/Desktop/log.io-ng
+56 verbose already installed skipping coffeeify@^1.1.0 /Users/apx/Desktop/log.io-ng
+57 verbose already installed skipping less@^2.5.0 /Users/apx/Desktop/log.io-ng
+58 verbose already installed skipping less-plugin-clean-css@^1.5.0 /Users/apx/Desktop/log.io-ng
+59 verbose already installed skipping mocha@^2.2.5 /Users/apx/Desktop/log.io-ng
+60 verbose already installed skipping sinon@^1.14.1 /Users/apx/Desktop/log.io-ng
+61 verbose already installed skipping sinon-chai@^2.7.0 /Users/apx/Desktop/log.io-ng
+62 verbose already installed skipping backbone@^1.2.0 /Users/apx/Desktop/log.io-ng
+63 verbose already installed skipping coffee-script@^1.9.2 /Users/apx/Desktop/log.io-ng
+64 verbose already installed skipping express@^3.20.2 /Users/apx/Desktop/log.io-ng
+65 verbose already installed skipping jquery@^2.1.4 /Users/apx/Desktop/log.io-ng
+66 verbose already installed skipping jquery-browserify@^1.8.1 /Users/apx/Desktop/log.io-ng
+67 verbose already installed skipping socket.io@^0.9.17 /Users/apx/Desktop/log.io-ng
+68 verbose already installed skipping socket.io-client@^0.9.17 /Users/apx/Desktop/log.io-ng
+69 verbose already installed skipping underscore@^1.8.3 /Users/apx/Desktop/log.io-ng
+70 verbose already installed skipping winston@^0.6.2 /Users/apx/Desktop/log.io-ng
+71 silly install resolved []
+72 info build /Users/apx/Desktop/log.io-ng
+73 info linkStuff log.io-ng@0.4.0
+74 silly linkStuff log.io-ng@0.4.0 has /Users/apx/Desktop as its parent node_modules
+75 verbose linkBins log.io-ng@0.4.0
+76 verbose linkMans log.io-ng@0.4.0
+77 verbose rebuildBundles log.io-ng@0.4.0
+78 verbose rebuildBundles [ '.bin',
+78 verbose rebuildBundles   'backbone',
+78 verbose rebuildBundles   'browserify',
+78 verbose rebuildBundles   'cake',
+78 verbose rebuildBundles   'chai',
+78 verbose rebuildBundles   'coffee-script',
+78 verbose rebuildBundles   'coffeeify',
+78 verbose rebuildBundles   'express',
+78 verbose rebuildBundles   'jquery',
+78 verbose rebuildBundles   'jquery-browserify',
+78 verbose rebuildBundles   'less',
+78 verbose rebuildBundles   'less-plugin-clean-css',
+78 verbose rebuildBundles   'mocha',
+78 verbose rebuildBundles   'sinon',
+78 verbose rebuildBundles   'sinon-chai',
+78 verbose rebuildBundles   'socket.io',
+78 verbose rebuildBundles   'socket.io-client',
+78 verbose rebuildBundles   'underscore',
+78 verbose rebuildBundles   'winston' ]
+79 info install log.io-ng@0.4.0
+80 info postinstall log.io-ng@0.4.0
+81 verbose unsafe-perm in lifecycle true
+82 info prepublish log.io-ng@0.4.0
+83 verbose unsafe-perm in lifecycle true
+84 info log.io-ng@0.4.0 Failed to exec prepublish script
+85 verbose stack Error: log.io-ng@0.4.0 prepublish: `./node_modules/cake/bin/cake build`
+85 verbose stack Exit status 1
+85 verbose stack     at EventEmitter.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/lifecycle.js:213:16)
+85 verbose stack     at emitTwo (events.js:87:13)
+85 verbose stack     at EventEmitter.emit (events.js:169:7)
+85 verbose stack     at ChildProcess.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/spawn.js:24:14)
+85 verbose stack     at emitTwo (events.js:87:13)
+85 verbose stack     at ChildProcess.emit (events.js:169:7)
+85 verbose stack     at maybeClose (child_process.js:953:16)
+85 verbose stack     at Process.ChildProcess._handle.onexit (child_process.js:1020:5)
+86 verbose pkgid log.io-ng@0.4.0
+87 verbose cwd /Users/apx/Desktop/log.io-ng
+88 error Darwin 14.4.0
+89 error argv "/usr/local/bin/iojs" "/usr/local/bin/npm" "i"
+90 error node v2.0.1
+91 error npm  v2.9.0
+92 error code ELIFECYCLE
+93 error log.io-ng@0.4.0 prepublish: `./node_modules/cake/bin/cake build`
+93 error Exit status 1
+94 error Failed at the log.io-ng@0.4.0 prepublish script './node_modules/cake/bin/cake build'.
+94 error This is most likely a problem with the log.io-ng package,
+94 error not with npm itself.
+94 error Tell the author that this fails on your system:
+94 error     ./node_modules/cake/bin/cake build
+94 error You can get their info via:
+94 error     npm owner ls log.io-ng
+94 error There is likely additional logging output above.
+95 verbose exit [ 1, true ]

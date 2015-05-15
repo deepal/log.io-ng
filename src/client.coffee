@@ -1,4 +1,5 @@
-### Log.io Web Client
+###
+Log.io Web Client
 
 Listens to server for new log messages, renders them to screen "widgets".
 
@@ -154,16 +155,20 @@ class WebClient
             streams: 0
             messages: 0
             start: new Date().getTime()
+
         @logNodes = new LogNodes
         @logStreams = new LogStreams
         @logScreens = new LogScreens
+
         @app = new ClientApplication
             logNodes: @logNodes
             logStreams: @logStreams
             logScreens: @logScreens
             webClient: @
+        
         @app.render()
         @_initScreens()
+        
         @socket = io.connect opts.host, secure: opts.secure
         _on = (args...) => @socket.on args...
 
@@ -180,8 +185,10 @@ class WebClient
     _initScreens: =>
         @logScreens.on 'add remove addPair removePair', =>
             @localStorage['logScreens'] = JSON.stringify @logScreens.toJSON()
+
         screenCache = @localStorage['logScreens']
         screens = if screenCache then JSON.parse(screenCache) else [{name: 'Screen1'}]
+
         @logScreens.add new @logScreens.model screen for screen in screens
 
     _addNode: (node) =>
@@ -190,10 +197,14 @@ class WebClient
 
     _addStream: (stream) =>
         @logStreams.add stream
+        
         @stats.streams++
+
         stream = @logStreams.get stream.name
+        
         stream.on 'lwatch', (node, screen) =>
             @socket.emit 'watch', screen._pid stream, node
+        
         stream.on 'lunwatch', (node, screen) =>
             @socket.emit 'unwatch', screen._pid stream, node
 
@@ -208,15 +219,19 @@ class WebClient
     _addPair: (p) =>
         stream = @logStreams.get p.stream
         node = @logNodes.get p.node
+        
         stream.pairs.add node
         node.pairs.add stream
+
         @logScreens.each (screen) ->
             screen.addPair stream, node if screen.hasPair stream, node
 
     _newLog: (msg) =>
         {stream, node, level, message} = msg
+
         stream = @logStreams.get stream
         node = @logNodes.get node
+        
         @logScreens.each (screen) ->
             if screen.hasPair stream, node
                 screen.trigger 'new_log', new LogMessage
@@ -266,14 +281,18 @@ class ClientApplication extends backbone.View
     template: _.template templates.clientApplication
     initialize: (opts) ->
         {@logNodes, @logStreams, @logScreens, @webClient} = opts
+
         @controls = new LogControlPanel
             logNodes: @logNodes
             logStreams: @logStreams
             logScreens: @logScreens
+
         @screens = new LogScreensPanel
             logScreens: @logScreens
             webClient: @webClient
+        
         $(window).resize @_resize if window?
+
         @listenTo @logScreens, 'add remove', @_resize
 
     _resize: =>

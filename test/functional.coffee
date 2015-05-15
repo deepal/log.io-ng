@@ -105,6 +105,7 @@ describe 'WebClient', ->
                     screen1 = webClient.createScreen 'Screen 1'
                     stream1 = webClient.logStreams.get 'stream1'
                     node1 = webClient.logNodes.get 'server01'
+                    
                     screen1.addPair stream1, node1
                     screen1.logMessages.should.have.length 0
 
