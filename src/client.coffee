@@ -38,7 +38,7 @@ class ColorManager
     constructor: (@_index=1) ->
     next: ->
         @_index = 1 if @_index is @_max
-        
+
         @_index++
 
 colors = new ColorManager
@@ -167,10 +167,10 @@ class WebClient
             logStreams: @logStreams
             logScreens: @logScreens
             webClient: this
-        
+
         @app.render()
         @_initScreens()
-        
+
         @socket = io.connect opts.host, secure: opts.secure
         _on = (args...) => @socket.on args...
 
@@ -199,14 +199,14 @@ class WebClient
 
     _addStream: (stream) =>
         @logStreams.add stream
-        
+
         @stats.streams++
 
         stream = @logStreams.get stream.name
-        
+
         stream.on 'lwatch', (node, screen) =>
             @socket.emit 'watch', screen._pid stream, node
-        
+
         stream.on 'lunwatch', (node, screen) =>
             @socket.emit 'unwatch', screen._pid stream, node
 
@@ -221,7 +221,7 @@ class WebClient
     _addPair: (p) =>
         stream = @logStreams.get p.stream
         node = @logNodes.get p.node
-        
+
         stream.pairs.add node
         node.pairs.add stream
 
@@ -233,7 +233,7 @@ class WebClient
 
         stream = @logStreams.get stream
         node = @logNodes.get node
-        
+
         @logScreens.each (screen) ->
             if screen.hasPair stream, node
                 screen.trigger 'new_log', new LogMessage
@@ -309,16 +309,16 @@ class ClientApplication extends backbone.View
         @$el.append @screens.render().el
 
         @_resize()
-        
+
         this
 
 class LogControlPanel extends backbone.View
     id: 'log_controls'
     template: _.template templates.logControlPanel
-    
+
     initialize: (opts) ->
         {@logNodes, @logStreams, @logScreens} = opts
-        
+
         @streams = new ObjectControls
             objects: @logStreams
             logScreens: @logScreens
@@ -340,16 +340,16 @@ class LogControlPanel extends backbone.View
         target = $ e.currentTarget
         target.addClass('active').siblings().removeClass 'active'
         tid = target.attr 'href'
-        
+
         @$el.find(tid).show().siblings('.object_controls').hide()
-        
+
         false
 
     render: ->
         @$el.html @template()
         @$el.append @streams.render().el
         @$el.append @nodes.render().el
-        
+
         this
 
 class ObjectControls extends backbone.View
@@ -587,7 +587,7 @@ class LogScreenView extends backbone.View
 
     _filter: (filter) =>
         @filter = if filter then new RegExp "(#{filter})", 'ig' else null
-        
+
         @_renderMessages()
 
     _addNewLogMessage: (lmessage) =>
@@ -604,12 +604,12 @@ class LogScreenView extends backbone.View
 
         if @filter
             msg = if _msg.match @filter then msg.replace @filter, '<span class="highlight">$1</span>' else null
-        
+
         if msg
             @msgs.append @logTemplate
                 lmessage: lmessage
                 msg: msg
-        
+
             @$el.find('.messages')[0].scrollTop = @$el.find('.messages')[0].scrollHeight if @forceScroll
 
     _renderMessages: =>
@@ -619,13 +619,13 @@ class LogScreenView extends backbone.View
     render: ->
         @$el.html @template
             logScreens: @logScreens
-        
+
         @$el.find('.messages').scroll @_recordScroll
         @$el.find('.controls .filter input').keyup @__filter
         @msgs = @$el.find '.msg'
-        
+
         @_renderMessages()
-        
+
         this
 
 class LogStatsView extends backbone.View
@@ -642,7 +642,12 @@ class LogStatsView extends backbone.View
         @$el.html @template
             stats: @stats
         @rendered = true
-        
+
         this
 
 exports.WebClient = WebClient
+
+do ->
+    client = new WebClient
+        secure: location?.protocol is 'https:'
+    , (localStorage? and localStorage) or (sessionStorage? and sessionStorage) or {}
