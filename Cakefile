@@ -1,12 +1,12 @@
 {spawn, exec} = require 'child_process'
 fs = require 'fs'
 
-ENV = '/usr/bin/env'
-BROWSERIFY = "#{ENV} browserify"
-COFFEE = "#{ENV} coffee"
-MOCHA = "#{ENV} mocha"
-LESS = "#{ENV} lessc"
-NODE = "#{ENV} node"
+ENV = "#{__dirname}/node_modules/.bin/"
+BROWSERIFY = "#{ENV}browserify"
+COFFEE = "#{ENV}coffee"
+MOCHA = "#{ENV}mocha"
+LESS = "#{ENV}lessc"
+NODE = "#{ENV}node"
 
 TEMPLATE_SRC = "#{ __dirname }/templates"
 TEMPLATE_OUTPUT = "#{ __dirname }/src/templates.coffee"
@@ -17,14 +17,14 @@ task 'build', "Builds Log.io package", ->
     invoke 'less'
     invoke 'browserify'
     # Ensure browserify has completed
-    setTimeout (-> invoke 'func_test'), 2000
+    #setTimeout (-> invoke 'test'), 2000
 
 task 'compile', "Compiles CoffeeScript src/*.coffee to lib/*.js", ->
     console.log "Compiling src/*.coffee to lib/*.js"
 
     exec "#{COFFEE} --compile --output #{__dirname}/lib/ #{__dirname}/src/", (err, stdout, stderr) ->
         throw err if err
-        
+
         console.log stdout, stderr if stdout or stderr
 
 task 'browserify', "Compiles client.coffee to browser-friendly JS", ->
@@ -53,7 +53,7 @@ task 'ensure:configuration', "Ensures that config files exist in ~/.log.io/", ->
         path = ldir + "#{c}.conf"
         copyFile "./conf/#{c}.conf", path if not fs.existsSync path
 
-task 'func_test', "Compiles & runs functional tests in test/", ->
+task 'test', "Compiles & runs functional tests in test/", ->
     console.log "Compiling test/*.coffee to test/lib/*.js..."
     exec "#{COFFEE} --compile --output #{__dirname}/test/lib/ #{__dirname}/test/", (err, stdout, stderr) ->
         throw err if err
