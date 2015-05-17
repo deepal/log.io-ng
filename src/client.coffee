@@ -114,8 +114,7 @@ class LogScreen extends backbone.Model
         pairIds.push pid if pid not in pairIds
         stream.trigger 'lwatch', node, @
         node.trigger 'lwatch', stream, @
-        stream.screens.update @
-        node.screens.update @
+
         @collection.trigger 'addPair'
 
     removePair: (stream, node) ->
