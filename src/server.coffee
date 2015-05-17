@@ -1,40 +1,41 @@
-### Log.io Log Server
+###
+	# Log.io Log Server #
 
-Relays inbound log messages to web clients
+	Relays inbound log messages to web clients
 
-LogServer receives log messages via TCP:
-"+log|my_stream|my_server_host|info|this is a log message\r\n"
+	LogServer receives log messages via TCP:
+	"+log|my_stream|my_server_host|info|this is a log message\r\n"
 
-Announce a node, optionally with stream associations
-"+node|my_server_host\r\n"
-"+node|my_server_host|my_stream1,my_stream2,my_stream3\r\n"
+	Announce a node, optionally with stream associations
+	"+node|my_server_host\r\n"
+	"+node|my_server_host|my_stream1,my_stream2,my_stream3\r\n"
 
-Announce a stream, optionally with node associations
-"+stream|my_stream1\r\n"
-"+stream|my_stream1|my_server_host1,my_host_server2\r\n"
+	Announce a stream, optionally with node associations
+	"+stream|my_stream1\r\n"
+	"+stream|my_stream1|my_server_host1,my_host_server2\r\n"
 
-Remove a node or stream
-"-node|my_server_host1\r\n"
-"-stream|stream2\r\n"
+	Remove a node or stream
+	"-node|my_server_host1\r\n"
+	"-stream|stream2\r\n"
 
-WebServer listens for events emitted by LogServer and
-forwards them to web clients via socket.io
+	WebServer listens for events emitted by LogServer and
+	forwards them to web clients via socket.io
 
-# Usage:
-logServer = new LogServer port: 28777
-webServer = new WebServer logServer, port: 28778
-webServer.run()
-
+	# Usage:
+	logServer = new LogServer port: 28777
+	webServer = new WebServer logServer, port: 28778
+	webServer.run()
 ###
 
+events = require 'events'
 fs = require 'fs'
-net = require 'net'
 http = require 'http'
 https = require 'https'
-io = require 'socket.io'
-events = require 'events'
-winston = require 'winston'
+net = require 'net'
+
 express = require 'express'
+io = require 'socket.io'
+winston = require 'winston'
 
 class _LogObject
 	_type: 'object'
@@ -74,10 +75,10 @@ class LogStream extends _LogObject
 	_pcollection: -> @logServer.logNodes
 
 ###
-LogServer listens for TCP connections.  It parses & validates
-inbound TCP messages, and emits events.
-
+	LogServer listens for TCP connections.  It parses & validates
+	inbound TCP messages, and emits events.
 ###
+
 class LogServer extends events.EventEmitter
 	constructor: (config={}) ->
 		{@host, @port} = config
@@ -170,94 +171,129 @@ class LogServer extends events.EventEmitter
 			socket.write 'ping'
 			setTimeout (=> @_ping socket), 2000
 
-
-
 ###
-WebServer relays LogServer events to web clients via socket.io.
-
+	WebServer relays LogServer events to web clients via socket.io.
 ###
 
 class WebServer
 	constructor: (@logServer, config) ->
 		{@host, @port, @auth} = config
+
 		{@logNodes, @logStreams} = @logServer
+
 		@restrictSocket = config.restrictSocket ? '*:*'
+
 		@_log = config.logging ? winston
+
 		# Create express server
 		app = @_buildServer config
+
 		@http = @_createServer config, app
 
 	_buildServer: (config) ->
 		app = express()
+
 		if @auth?
 			app.use express.basicAuth @auth.user, @auth.pass
+
 		if config.restrictHTTP
 			ips = new RegExp config.restrictHTTP.join '|'
+
 			app.all '/', (req, res, next) =>
 				if not req.ip.match ips
 					return res.send 403, "Your IP (#{req.ip}) is not allowed."
+
 				next()
+
 		staticPath = config.staticPath ? __dirname + '/../'
+
 		app.use express.static staticPath
 
 	_createServer: (config, app) ->
-		if config.ssl
-			return https.createServer {
+		unless config.ssl
+			http.createServer app
+		else
+			https.createServer
 				key: fs.readFileSync config.ssl.key
 				cert: fs.readFileSync config.ssl.cert
-			}, app
-		else
-			return http.createServer app
+			, app
 
 	run: ->
 		@_log.info 'Starting Log.io Web Server...'
+
 		@logServer.run()
+
 		io = io.listen @http.listen @port, @host
+
 		io.set 'log level', 1
 		io.set 'origins', @restrictSocket
-		@listener = io.sockets
 
-		_on = (args...) => @logServer.on args...
+		# sockets on which we propagate to
+		# each listener; broadcast
+		{sockets} = io
+
+		_on = @logServer.on.bind this
 		_emit = (_event, msg) =>
 			@_log.debug "Relaying: #{_event}"
-			@listener.emit _event, msg
+			sockets.emit _event, msg
 
 		# Bind events from LogServer to web client
 		_on 'add_node', (node) ->
 			_emit 'add_node', node.toDict()
+
 		_on 'add_stream', (stream) ->
 			_emit 'add_stream', stream.toDict()
+
 		_on 'add_stream_pair', (stream, nname) ->
-			_emit 'add_pair', {stream: stream.name, node: nname}
+			_emit 'add_pair',
+				stream: stream.name,
+				node: nname
+
 		_on 'add_node_pair', (node, sname) ->
-			_emit 'add_pair', {stream: sname, node: node.name}
+			_emit 'add_pair',
+				stream: sname,
+				node: node.name
+
 		_on 'remove_node', (node) ->
 			_emit 'remove_node', node.toDict()
+
 		_on 'remove_stream', (stream) ->
 			_emit 'remove_stream', stream.toDict()
 
 		# Bind new log event from Logserver to web client
-		_on 'new_log', (stream, node, level, message) =>
-			_emit 'ping', {stream: stream.name, node: node.name}
-			# Only send message to web clients watching logStream
-			@listener.in("#{stream.name}:#{node.name}").emit 'new_log',
+		_on 'new_log', (stream, node, level, message) ->
+			# announce new node/stream pair
+			_emit 'ping',
+				stream: stream.name,
+				node: node.name
+
+			# Only propagate new messages to clients
+			# which listen to the respective node/stream
+			# pair. ; TODO: Listen by default?
+			sockets
+			.in("#{stream.name}:#{node.name}")
+			.emit 'new_log',
 				stream: stream.name
 				node: node.name
 				level: level
 				message: message
 
+		{logNodes, logStreams} = this
+
 		# Bind web client connection, events to web server
-		@listener.on 'connection', (wclient) =>
-			wclient.emit 'add_node', node.toDict() for n, node of @logNodes
-			wclient.emit 'add_stream', stream.toDict() for s, stream of @logStreams
-			for n, node of @logNodes
+		sockets.on 'connection', (wclient) ->
+			wclient.on 'watch',   wclient.join.bind wclient
+			wclient.on 'unwatch', wclient.leave.bind wclient
+
+			wclient.emit 'add_node', node.toDict() for n, node of logNodes
+			wclient.emit 'add_stream', stream.toDict() for s, stream of logStreams
+
+			for n, node of logNodes
 				for s, stream of node.pairs
 					wclient.emit 'add_pair', {stream: s, node: n}
+
 			wclient.emit 'initialized'
-			wclient.on 'watch', (pid) ->
-				wclient.join pid
-			wclient.on 'unwatch', (pid) ->
-				wclient.leave pid
+
 		@_log.info 'Server started, listening...'
 
 exports.LogServer = LogServer
