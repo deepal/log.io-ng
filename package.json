@@ -22,7 +22,7 @@
     "backbone": "^1.2.0",
     "coffee-script": "^1.9.2",
     "express": "^3.20.2",
-    "jquery": "^2.1.4",
+    "jquery": "~1.11.3",
     "jquery-browserify": "^1.8.1",
     "socket.io": "^0.9.17",
     "socket.io-client": "^0.9.17",
