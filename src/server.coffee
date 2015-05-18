@@ -42,22 +42,27 @@ class _LogObject
 	_pclass: ->
 	_pcollection: ->
 	constructor: (@logServer, @name, _pairs=[]) ->
-		@logServer.emit "add_#{@_type}", @
+		@logServer.emit "add_#{@_type}", this
+
 		@pairs = {}
+
 		@pclass = @_pclass()
 		@pcollection = @_pcollection()
+
 		@addPair pname for pname in _pairs
 
 	addPair: (pname) ->
-		if not pair = @pairs[pname]
-			if not pair = @pcollection[pname]
+		unless pair = @pairs[pname]
+			unless pair = @pcollection[pname]
 				pair = @pcollection[pname] = new @pclass @logServer, pname
-			pair.pairs[@name] = @
+
+			pair.pairs[@name] = this
 			@pairs[pname] = pair
-			@logServer.emit "add_#{@_type}_pair", @, pname
+
+			@logServer.emit "add_#{@_type}_pair", this, pname
 
 	remove: ->
-		@logServer.emit "remove_#{@_type}", @
+		@logServer.emit "remove_#{@_type}", this
 		delete p.pairs[@name] for name, p of @pairs
 
 	toDict: ->
@@ -67,12 +72,12 @@ class _LogObject
 class LogNode extends _LogObject
 	_type: 'node'
 	_pclass: -> LogStream
-	_pcollection: -> @logServer.logStreams
+	_pcollection: -> @logServer.streams
 
 class LogStream extends _LogObject
 	_type: 'stream'
 	_pclass: -> LogNode
-	_pcollection: -> @logServer.logNodes
+	_pcollection: -> @logServer.nodes
 
 ###
 	LogServer listens for TCP connections.  It parses & validates
@@ -82,43 +87,51 @@ class LogStream extends _LogObject
 class LogServer extends events.EventEmitter
 	constructor: (config={}) ->
 		{@host, @port} = config
-		@_log = config.logging ? winston
-		@_delimiter = config.delimiter ? '\r\n'
-		@logNodes = {}
-		@logStreams = {}
+
+		# Per default, use localhost:28777
+		@host = '127.0.0.1' unless @host?
+		@port = 28777       unless @port?
+
+		@debug = config.logging ? winston
+		@delimiter = config.delimiter ? '\r\n'
+
+		@nodes = {}
+		@streams = {}
 
 	run: ->
 		# Create TCP listener socket
-		@listener = net.createServer (socket) =>
+		@server = net.createServer (socket) =>
 			socket._buffer = ''
-			socket.on 'data', (data) => @_receive data, socket
-			socket.on 'error', => @_tearDown socket
-			socket.on 'close', => @_tearDown socket
-		@listener.listen @port, @host
+
+			socket.on 'data', @_receive.bind   this, socket
+			socket.on 'error', @_tearDown.bind this, socket
+			socket.on 'close', @_tearDown.bind this, socket
+
+		@server.listen @port, @host
 
 	_tearDown: (socket) ->
 		# Destroy a client socket
-		@_log.error 'Lost TCP connection...'
+		@debug.error 'Lost TCP connection...'
 		if socket.node
 			@_removeNode socket.node.name
 			delete socket.node
 
-	_receive: (data, socket) =>
+	_receive: (socket, data) =>
 		part = data.toString()
 		socket._buffer += part
-		@_log.debug "Received TCP message: #{part}"
-		@_flush socket if socket._buffer.indexOf @_delimiter >= 0
+		@debug.debug "Received TCP message: #{part}"
+		@_flush socket if socket._buffer.indexOf @delimiter >= 0
 
 	_flush: (socket) =>
 		# Handle messages in socket buffer
 		# Pause socket while modifying buffer
 		socket.pause()
-		[msgs..., socket._buffer] = socket._buffer.split @_delimiter
+		[msgs..., socket._buffer] = socket._buffer.split @delimiter
 		socket.resume()
 		@_handle socket, msg for msg in msgs
 
 	_handle: (socket, msg) ->
-		@_log.debug "Handling message: #{msg}"
+		@debug.debug "Handling message: #{msg}"
 		[mtype, args...] = msg.split '|'
 		switch mtype
 			when '+log' then @_newLog args...
@@ -127,42 +140,42 @@ class LogServer extends events.EventEmitter
 			when '-node' then @_removeNode args...
 			when '-stream' then @_removeStream args...
 			when '+bind' then @_bindNode socket, args...
-			else @_log.error "Invalid TCP message: #{msg}"
+			else @debug.error "Invalid TCP message: #{msg}"
 
 	_addNode: (nname, snames='') ->
-		@__add nname, snames, @logNodes, LogNode, 'node'
+		@addEntity nname, snames, @nodes, LogNode, 'node'
 
 	_addStream: (sname, nnames='') ->
-		@__add sname, nnames, @logStreams, LogStream, 'stream'
+		@addEntity sname, nnames, @streams, LogStream, 'stream'
 
 	_removeNode: (nname) ->
-		@__remove nname, @logNodes, 'node'
+		@__remove nname, @nodes, 'node'
 
 	_removeStream: (sname) ->
-		@__remove sname, @logStreams, 'stream'
+		@__remove sname, @streams, 'stream'
 
 	_newLog: (sname, nname, logLevel, message...) ->
 		message = message.join '|'
-		@_log.debug "Log message: (#{sname}, #{nname}, #{logLevel}) #{message}"
-		node = @logNodes[nname] or @_addNode nname, sname
-		stream = @logStreams[sname] or @_addStream sname, nname
+		@debug.debug "Log message: (#{sname}, #{nname}, #{logLevel}) #{message}"
+		node = @nodes[nname] or @_addNode nname, sname
+		stream = @streams[sname] or @_addStream sname, nname
 		@emit 'new_log', stream, node, logLevel, message
 
-	__add: (name, pnames, _collection, _objClass, objName) ->
-		@_log.info "Adding #{objName}: #{name} (#{pnames})"
+	addEntity: (name, pnames, _collection, _objClass, objName) ->
+		@debug.info "Adding #{objName}: #{name} (#{pnames})"
 		pnames = pnames.split ','
 		obj = _collection[name] = _collection[name] or new _objClass @, name, pnames
 		obj.addPair p for p in pnames when not obj.pairs[p]
 
 	__remove: (name, _collection, objType) ->
 		if obj = _collection[name]
-			@_log.info "Removing #{objType}: #{name}"
+			@debug.info "Removing #{objType}: #{name}"
 			obj.remove()
 			delete _collection[name]
 
 	_bindNode: (socket, obj, nname) ->
-		if node = @logNodes[nname]
-			@_log.info "Binding node '#{nname}' to TCP socket"
+		if node = @nodes[nname]
+			@debug.info "Binding node '#{nname}' to TCP socket"
 			socket.node = node
 			@_ping socket
 
@@ -179,11 +192,11 @@ class WebServer
 	constructor: (@logServer, config) ->
 		{@host, @port, @auth} = config
 
-		{@logNodes, @logStreams} = @logServer
+		{@nodes, @streams} = @logServer
 
 		@restrictSocket = config.restrictSocket ? '*:*'
 
-		@_log = config.logging ? winston
+		@debug = config.logging ? winston
 
 		# Create express server
 		app = @_buildServer config
@@ -219,7 +232,7 @@ class WebServer
 			, app
 
 	run: ->
-		@_log.info 'Starting Log.io Web Server...'
+		@debug.info 'Starting Log.io Web Server...'
 
 		@logServer.run()
 
@@ -234,7 +247,7 @@ class WebServer
 
 		_on = @logServer.on.bind this
 		_emit = (_event, msg) =>
-			@_log.debug "Relaying: #{_event}"
+			@debug.debug "Relaying: #{_event}"
 			sockets.emit _event, msg
 
 		# Bind events from LogServer to web client
@@ -246,12 +259,12 @@ class WebServer
 
 		_on 'add_stream_pair', (stream, nname) ->
 			_emit 'add_pair',
-				stream: stream.name,
+				stream: stream.name
 				node: nname
 
 		_on 'add_node_pair', (node, sname) ->
 			_emit 'add_pair',
-				stream: sname,
+				stream: sname
 				node: node.name
 
 		_on 'remove_node', (node) ->
@@ -264,7 +277,7 @@ class WebServer
 		_on 'new_log', (stream, node, level, message) ->
 			# announce new node/stream pair
 			_emit 'ping',
-				stream: stream.name,
+				stream: stream.name
 				node: node.name
 
 			# Only propagate new messages to clients
@@ -294,7 +307,7 @@ class WebServer
 
 			wclient.emit 'initialized'
 
-		@_log.info 'Server started, listening...'
+		@debug.info 'Server started, listening...'
 
 exports.LogServer = LogServer
 exports.WebServer = WebServer
