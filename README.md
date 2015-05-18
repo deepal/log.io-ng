@@ -1,5 +1,23 @@
-Log.io - Real-time log monitoring in your browser
+What is this?
 =================================================
+
+This is a fork from  [Log.io] (https://github.com/NarrativeScience/Log.io) and *not*
+the original project! This project is not related to NarrativeScience.
+
+We, [KenanSulayman](https://github.com/KenanSulayman/) and [hanneshal](https://github.com/hanneshal/), fans of initial Log.io, decided
+to fork and update the project because it hasn't been updated in a long time
+and there are many open PRs.
+
+So... what now. At the moment we are busy updating the codebase, docs and stuff.
+We will release an updated npm ASAP. For updates check the issue and commit list.
+The focus is on testable code and an easy installation.
+
+If you want to contribute, feel free to send PRs.
+
+
+
+# Log.io - Real-time log monitoring in your browser
+
 
 Powered by [node.js](http://nodejs.org) + [socket.io](http://socket.io)
 
@@ -69,7 +87,7 @@ Remove a node
 
 - [jdrake](http://github.com/jdrake)
 
-## License 
+## License
 
 Copyright 2013 Narrative Science &lt;contrib@narrativescience.com&gt;
 
