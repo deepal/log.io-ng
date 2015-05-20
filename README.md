@@ -1,4 +1,4 @@
-What is this?
+What is this? [![Build Status](https://travis-ci.org/perint/log.io-ng.svg)](https://travis-ci.org/perint/log.io-ng)
 =================================================
 
 This is a fork from  [Log.io] (https://github.com/NarrativeScience/Log.io) and *not*
