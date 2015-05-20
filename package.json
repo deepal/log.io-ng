@@ -21,6 +21,7 @@
   "dependencies": {
     "backbone": "^1.2.0",
     "cake": "^0.1.1",
+    "less": "^2.5.0",
     "coffee-script": "^1.9.2",
     "express": "^3.20.2",
     "jquery": "^2.1.4",
@@ -38,7 +39,8 @@
     "less-plugin-clean-css": "^1.5.0",
     "mocha": "^2.2.5",
     "sinon": "^1.14.1",
-    "sinon-chai": "^2.7.0"
+    "sinon-chai": "^2.7.0",
+    "should": ">= 6.0.0"
   },
   "bin": {
     "log.io-server": "./bin/log.io-server",
@@ -46,6 +48,7 @@
   },
   "scripts": {
     "prepublish": "./node_modules/cake/bin/cake build",
-    "postinstall": "./node_modules/cake/bin/cake ensure:configuration"
+    "postinstall": "./node_modules/cake/bin/cake ensure:configuration",
+    "test": "mocha test"
   }
 }
