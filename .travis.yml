@@ -7,5 +7,3 @@ node_js:
   - iojs
 before_script:
   ./node_modules/.bin/cake build
-before_install:
-  - npm install coffee-script
