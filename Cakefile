@@ -8,16 +8,20 @@ MOCHA = "#{ENV}mocha"
 LESS = "#{ENV}lessc"
 NODE = "#{ENV}node"
 
-TEMPLATE_SRC = "#{ __dirname }/templates"
-TEMPLATE_OUTPUT = "#{ __dirname }/src/templates.coffee"
+TEMPLATE_SRC = "#{__dirname}/templates"
+TEMPLATE_OUTPUT = "#{__dirname}/src/templates.coffee"
 
 task 'build', "Builds Log.io package", ->
+    invoke 'ensure:buildPrerequisites'
     invoke 'templates'
     invoke 'compile'
     invoke 'less'
     invoke 'browserify'
     # Ensure browserify has completed
     #setTimeout (-> invoke 'test'), 2000
+
+task 'ensure:buildPrerequisites', ->
+    exec "mkdir -p #{__dirname}/lib", (err, stdout, stderr) ->
 
 task 'compile', "Compiles CoffeeScript src/*.coffee to lib/*.js", ->
     console.log "Compiling src/*.coffee to lib/*.js"
