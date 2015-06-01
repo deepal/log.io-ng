@@ -245,7 +245,7 @@ class WebServer
 		# each listener; broadcast
 		{sockets} = io
 
-		_on = @logServer.on.bind this
+		_on = @logServer.on.bind @logServer
 		_emit = (_event, msg) =>
 			@debug.debug "Relaying: #{_event}"
 			sockets.emit _event, msg
