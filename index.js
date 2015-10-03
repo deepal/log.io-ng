@@ -1,5 +1,5 @@
 module.exports = {
-    LogHarvester: require('./lib/harvester.js').LogHarvester,
-    LogServer: require('./lib/server.js').LogServer,
-    WebServer: require('./lib/server.js').WebServer
+    LogHarvester: require(__dirname + '/lib/harvester.js').LogHarvester,
+    LogServer: require(__dirname + '/lib/server.js').LogServer,
+    WebServer: require(__dirname + '/lib/server.js').WebServer
 }

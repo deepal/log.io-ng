@@ -92,7 +92,6 @@ class LogMessages extends backbone.Collection
     _capped: =>
         @remove @at (@length - MESSAGE_CAP) if @length > MESSAGE_CAP
 
-
 ###
 LogScreen models maintain state for screen widgets in the UI.
 When (Stream, Node) pairs are associated with a screen, the pair ID
