@@ -220,6 +220,9 @@ class WebClient
         stream = @logStreams.get p.stream
         node = @logNodes.get p.node
 
+        stream = @logStreams.add p.stream unless stream?
+        node = @logNodes.add p.node unless stream?
+
         stream.pairs.add node
         node.pairs.add stream
 
