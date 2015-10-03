@@ -192,8 +192,10 @@ class WebClient
         @logScreens.add new @logScreens.model screen for screen in screens
 
     _addNode: (node) =>
-        @logNodes.add node
+        node = @logNodes.add node
         @stats.nodes++
+
+        node
 
     _addStream: (stream) =>
         @logStreams.add stream
@@ -208,6 +210,8 @@ class WebClient
         stream.on 'lunwatch', (node, screen) =>
             @socket.emit 'unwatch', screen._pid stream, node
 
+        stream
+
     _removeNode: (node) =>
         @logNodes.get(node.name)?.destroy()
         @stats.nodes--
@@ -220,8 +224,8 @@ class WebClient
         stream = @logStreams.get p.stream
         node = @logNodes.get p.node
 
-        stream = @logStreams.add p.stream unless stream?
-        node = @logNodes.add p.node unless stream?
+        stream = @_addStream p.stream unless stream?
+        node = @_addNode p.node unless stream?
 
         stream.pairs.add node
         node.pairs.add stream
