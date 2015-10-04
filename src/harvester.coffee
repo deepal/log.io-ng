@@ -184,6 +184,8 @@ class LogHarvester
 			@retries = 0
 			@connected = true
 
+			cb null
+
 		.on 'error', (e) ->
 			console.log e
 
