@@ -148,7 +148,7 @@ class LogHarvester
 		@_connect (err) =>
 			@queue.push msg
 
-			do @_commit
+			@_commit() unless err?
 
 	###
 		Below is based on https://gist.github.com/KenanSulayman/f7e55a28df614c520576.
@@ -160,7 +160,9 @@ class LogHarvester
 		# cutcopy the queue
 		_queue = (do @queue.shift for item in @queue)
 
-		@instance.write _queue.join '' if _queue.length
+		line = "#{_queue.join '\r\n'}\r\n"
+
+		@instance.write line if _queue.length
 
 	_connect: (cb) =>
 		if @instance?
