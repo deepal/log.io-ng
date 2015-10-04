@@ -26,7 +26,7 @@ _ = require 'underscore'
 templates = require './templates'
 
 # Cap LogMessages collection size
-MESSAGE_CAP = 5000
+MESSAGE_CAP = 1
 
 ###
 ColorManager acts as a circular queue for color values.
@@ -221,11 +221,8 @@ class WebClient
         @stats.streams--
 
     _addPair: (p) =>
-        stream = @logStreams.get p.stream
-        node = @logNodes.get p.node
-
-        stream = @_addStream p.stream unless stream?
-        node = @_addNode p.node unless stream?
+        stream = @_getOrAdd 'stream', p.stream
+        node = @_getOrAdd 'node', p.node
 
         stream.pairs.add node
         node.pairs.add stream
@@ -236,8 +233,8 @@ class WebClient
     _newLog: (msg) =>
         {stream, node, level, message} = msg
 
-        stream = @logStreams.get stream
-        node = @logNodes.get node
+        stream = @_getOrAdd 'stream', stream
+        node = @_getOrAdd 'node', node
 
         @logScreens.each (screen) ->
             if screen.hasPair stream, node
@@ -247,10 +244,25 @@ class WebClient
                     level: level
                     message: message
 
+    _getOrAdd: (type, name) =>
+        if type is 'stream'
+            stream = @logStreams.get name
+            stream = @_addStream p.stream unless stream?
+
+            return stream
+
+        if type is 'node'
+            node = @logNodes.get p.node
+            node = @_addNode p.node unless stream?
+
+            return node
+
     _ping: (msg) =>
         {stream, node} = msg
-        stream = @logStreams.get stream
-        node = @logNodes.get node
+
+        stream = @_getOrAdd 'stream', stream
+        node = @_getOrAdd 'node', node
+
         stream.trigger 'ping', node if stream
         node.trigger 'ping', stream if node
         @stats.messages++
