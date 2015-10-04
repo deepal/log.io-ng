@@ -247,13 +247,13 @@ class WebClient
     _getOrAdd: (type, name) =>
         if type is 'stream'
             stream = @logStreams.get name
-            stream = @_addStream p.stream unless stream?
+            stream = @_addStream name unless stream?
 
             return stream
 
         if type is 'node'
-            node = @logNodes.get p.node
-            node = @_addNode p.node unless stream?
+            node = @logNodes.get node
+            node = @_addNode name unless node?
 
             return node
 
