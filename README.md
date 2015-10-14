@@ -1,4 +1,4 @@
-What is this? [![Build Status](https://travis-ci.org/perint/log.io-ng.svg)](https://travis-ci.org/perint/log.io-ng)
+What is this? [![Build status](https://img.shields.io/travis/perint/log.io-ng.svg)](https://travis-ci.org/perint/log.io-ng) [![npm](https://img.shields.io/npm/v/log.io-ng.svg)](https://www.npmjs.com/package/log.io-ng)
 =================================================
 
 This is a fork from  [Log.io] (https://github.com/NarrativeScience/Log.io) and *not*
@@ -16,12 +16,12 @@ If you want to contribute, feel free to send PRs.
 
 
 
-# Log.io - Real-time log monitoring in your browser
+## Log.io - Real-time log monitoring in your browser
 
 
 Powered by [node.js](http://nodejs.org) + [socket.io](http://socket.io)
 
-## How does it work?
+### How does it work?
 
 *Harvesters* watch log files for changes, send new log messages to the *server* via TCP, which broadcasts to *web clients* via socket.io.
 
@@ -29,7 +29,7 @@ Log streams are defined by mapping file paths to a stream name in harvester conf
 
 Users browse streams and nodes in the web UI, and activate (stream, node) pairs to view and search log messages in screen widgets.
 
-## Install Server & Harvester
+### Install Server & Harvester
 
 1) Install via npm
 
@@ -49,7 +49,7 @@ Users browse streams and nodes in the web UI, and activate (stream, node) pairs 
 
 5) Browse to http://localhost:28778
 
-## Server TCP Interface
+### Server TCP Interface
 
 Harvesters connect to the server via TCP, and write properly formatted strings to the socket.  Third party harvesters can send messages to the server using the following commands:
 
@@ -69,13 +69,13 @@ Remove a node
 
     -node|my_node\r\n
 
-## Credits
+### Credits
 
 - Mike Smathers &lt;msmathers@narrativescience.com&gt; ([msmathers](http://github.com/msmathers))
 
 - Narrative Science http://narrativescience.com ([NarrativeScience](http://github.com/NarrativeScience))
 
-## Acknowledgements
+### Acknowledgements
 
 - Jeremy Ashkenas ([jashkenas](https://github.com/jashkenas))
 
@@ -87,7 +87,7 @@ Remove a node
 
 - [jdrake](http://github.com/jdrake)
 
-## License
+### License
 
 Copyright 2013 Narrative Science &lt;contrib@narrativescience.com&gt;
 
